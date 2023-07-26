@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
  <head>
-     <title>Looping Forms</title>
+     <title>Data Processing</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="css/main.css">
@@ -10,7 +10,7 @@
  </head>
  <body>
      <header>
-     <h1 class="page-header">Looping Forms</h1>
+     <h1 class="page-header">Data Processing</h1>
         <nav class="topnav" id="myTopnav">
             <a href="index.html" class="active">Home</a>
             <a href="https://rhuyu.github.io/portal/">Back to Portal</a>
@@ -19,10 +19,35 @@
      </header>
      
    <main class="wrapper">
- <p>Welcome! Here is a page demonstrating the front-end requirements of having a form for a user to fill out with multiple options and variations of forms that can be submitted! The data won't be sent anywhere however, this is a good visualization and template for me to use in future assignments. Feel free to fill out the boxes and test them for yourself! (Don't worry your data won't be sent anywhere this is purely a demo.)</p>
+ <p>Welcome! Here is a page demonstrating the front-end requirements of a shopping cart with customer info and shipping address, which will be held on too for future processing. There are 3 different "items for sale" followed by an address request for shipping. Once the info has been submitted, the page will take you to a confirmation page to verify the data inputted!</p>
     <h2 class="subheader">Add Shipping Info Below:</h2>
     <div id="output">
     <form method="get" action="" class="main-form">
+<h2>Buy Our Widgets</h2>
+      <div id="widgets">
+        <div>
+            <b>Widget</b><br />
+            <p>Our Widgets are spring loaded and need no batteries!</p>
+            <p>At $3.99 they're a bargain!</p>
+            <p><label><input type = "checkbox" name="Cart" value="Widget"> Add to Cart</label></p>
+            <div class="pic"><img src="images/widget.png" /></div>
+        </div>
+        <div>
+            <b>Sprocket</b><br />
+            <p>Our Sprockets are well made and hold up to extreme pressure!</p>
+            <p>They only cost $5.99!</p>
+            <p><label><input type = "checkbox" name="Cart" value="Sprocket"> Add to Cart</label></p>
+            <div class="pic"><img src="images/sprocket.png" /></div>
+        </div>
+        <div>
+            <b>Thingy</b><br />
+            <p>Our Thingys have many uses, and people come up with new ones all the time!</p>
+            <p>Such a deal at $1.99!</p>
+            <p><label><input type = "checkbox" name="Cart" value="Thingy"> Add to Cart</label></p>
+            <div class="pic"><img src="images/thingy.png" /></div>
+        </div>
+    </div>
+    <h2>Shipping Info Below:</h2>
       <div>
         <label for="FirstName">First Name</label><br>
         <input type="text" name="First_Name" id="FirstName" placeholder="First Name" required autofocus>  
@@ -77,24 +102,86 @@
   </main>
   <script src="js/main.js"></script>   
   <script>
-    const queryString = window.location.search;
-    
-    const urlParams = new URLSearchParams(queryString);
+    function titleCase(str) {
+      str = str.toLowerCase().split(' ');
+      for (var i = 0; i < str.length; i++) {
+        str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
+      }
+      return str.join(' ');
+    }
+  
+      const queryString = window.location.search;
+      
+      const urlParams = new URLSearchParams(queryString);
+  
+      if(queryString.length > 0){//form submitted!
+        let myOutput = ``;//will store data for display
+          //alert("Data submitted!");
+  
+          let myShipping = "";
+          let myCart = "";
+          let myTotal = 0;
 
-    if(queryString.length > 0){//form submitted!
-      let myOutput = `<div id="container">`;//will store data for display
-        //alert("Data submitted!");
         urlParams.forEach(function(value,key){
           //console.log(value);
-        key = key.split("_").join(" ");
 
-          myOutput += `<p>${key}: ${value}</p>`;
-        }); 
-      myOutput += `<p><a href="index.html">CLEAR</a></p>`; 
-      myOutput += `</div>`;
-    
-      document.querySelector("#output").innerHTML = myOutput;
-    }
+          if(key == "Cart"){//process for cart
+           // alert(value);
+
+           switch(value){
+            case "Widget"
+              myCart += `Widget: $3.99<br>`;
+              myTotal += 3.99;
+            break;
+
+            case "Sprocket"
+              myCart += `Sprocket: $5.99<br>`;
+              myTotal += 5.99;
+            break;
+
+            case "Thingy"
+              myCart += `Thingy: $1.99<br>`;
+              myTotal += 1.99;
+            break;
+
+           }//end cart items
+
+          }else{
+
+          
+  
+          key = key.split("_").join(" ");
+  
+          //title case first, last, address & city only
+          switch(key){
+  
+            case "First Name":
+            case "Last Name":
+            case "Address":
+            case "City":
+              value = titleCase(value);
+            break;
+  
+          }
+  
+        }myOutput += `<p>${key}: ${value}</p>`;
+  
+        });  
+   
+        myOutput = `<div id = "container">`;//will store data for display
+
+        myCart = `<h3>Cart Contents</h3><p>${myCart}</p>
+        <p>Total: $${myTotal}</p>`;
+
+        myShipping = "<h3>Shipping Info</h3>" + myShipping
+        myOutput += myCart + myShipping;
+        
+
+        myOutput += `<p><a href="index.html">CLEAR</a></p>`;  
+        myOutput += `</div>`;
+       
+        document.querySelector("#output").innerHTML = myOutput;
+      }
   </script>
  </body>
 </html>
